@@ -5,14 +5,17 @@
     <div class="image">
 
         <div>
-            <?php echo $this->Html->image($this->data['User']['profilepic'], array('class' => 'profile-pic', 'height' => '250', 'width' => '250', 'fullBase' => true, 'plugin' => false));?>
+            <?php echo $this->Html->image($this->data['User']['profilepic'], array('class' => 'profile-pic', 'id' => 'blah', 'height' => '250', 'width' => '250', 'fullBase' => true, 'plugin' => false));?>
         </div>
         
         <div>
-            <?php echo $this->Form->input('Upload', ['type'=>'file', 'class' => 'image-upload'])?>
+            <?php echo $this->Form->input('Upload', ['type'=>'file', 'class' => 'file-upload'])?>
         </div>
         
     </div>
+
+
+
 
     <div class="user-datails">
         <div class="first-name">
@@ -24,11 +27,12 @@
 		<div class="gender">
 			<?php echo $this->Form->input('gender', array( 
 						'options' => array('Male' => 'Male', 'Female' => 'Female'),
-						'type' => 'radio'
+						'type' => 'select',
+						'class' => 'form-control'
 					)); ?>
 		</div>
 		<div class="birthday">
-			<?php echo $this->Form->input('birthday', array('type' => 'text', 'id' => 'datepicker')); 
+			<?php echo $this->Form->input('birthday', array('type' => 'text', 'id' => 'datepicker' ,'placeholder'=>'2000-12-25')); 
             ?>
 		</div>
     </div>
@@ -48,8 +52,6 @@
 	<?php echo $this->Form->end(); ?>
 </div>
 
-</div>
-
 <script type="text/javascript">
 	$(document).ready(function() {
 		var readURL = function(input) {
@@ -64,14 +66,14 @@
 			}
 		}
 
-		$(".image-upload").on('change', function(){
+		$(".file-upload").on('change', function(){
 			readURL(this);
 		});
 	});
 
 
-	$( function() {
-    		$( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });
-  				} );
+	$(document).ready(function() {
+		$( "#datepicker" ).datepicker({dateFormat: 'yy-mm-dd'});
+	});
 
 </script>

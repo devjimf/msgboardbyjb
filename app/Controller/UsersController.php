@@ -104,7 +104,7 @@ class UsersController extends AppController {
 
             if ($this->User->save($this->request->data)) {
                 $this->Flash->success(__('The user has been saved'));
-                return $this->redirect(array('action' => 'index'));
+                return $this->redirect(array('action' => 'profile'));
             }
             $this->Flash->error(
                 __('The user could not be saved. Please, try again.')
@@ -116,8 +116,7 @@ class UsersController extends AppController {
     }
 
     public function delete($id = null) {
-        // Prior to 2.5 use
-        // $this->request->onlyAllow('post');
+
 
         $this->request->allowMethod('post');
 
