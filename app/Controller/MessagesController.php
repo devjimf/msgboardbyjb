@@ -34,11 +34,21 @@ class MessagesController extends AppController {
     `from_user_id` = $user_id 
     OR 
     `to_user_id` = $user_id 
-    ORDER BY date_created DESC 
-    LIMIT 5;
+    ORDER BY date_created DESC ;
      ");
         //pr($messages);
-        
+         //$messageid = $messages['Messages']['id'];
+        //$messageid = $this->Message->query();
+
+        $lastreply = $this->Reply->query("
+        SELECT message_id, reply_details FROM Replies ORDER BY date_created DESC; 
+        "); 
+
+        pr($lastreply);
+
+
+        $this->set('last',$lastreply[0]['Replies']['reply_details']);
+
         $this->set(compact('messages'));
         $this->set(compact('userdata'));
 
@@ -52,6 +62,27 @@ class MessagesController extends AppController {
 		// 	. ' AND to_user = ' . $from_user . ') OR (from_user = ' . $from_user 
 		// 	. ' AND to_user = ' . $to_user . '))');
 		// 	pr($check);
+
+        // $messageid = $this->Message->query("
+        //         SELECT * FROM Messages as Messages WHERE 
+        //         (`from_user_id` = $to_user 
+        //         AND 
+        //         `to_user_id` = $from_user)
+        //         OR
+        //         (`from_user_id` = $from_user 
+        //         AND 
+        //         `to_user_id` = $to_user);
+        //          ");
+
+                //  $msgid = $messageid[0]['Messages']['id'];
+        
+
+                //  $lastreply = $this->Reply->query("
+                //  SELECT id, MAX(reply_details) AS last_message FROM replies WHERE message_id = $msgid GROUP BY id ORDER BY date_created DESC LIMIT 1;
+                //  ");
+                // $last = $lastreply[0][0]['last_message'];
+                //  pr($last);
+                // $this->set('last', $last);
 
 
     }
@@ -92,16 +123,16 @@ class MessagesController extends AppController {
 			}
 			else
 			{
-				$this->loadModel('Reply');
-				$this->request->data['Reply']['to_user'] = $this->request->data['Message']['users'];
-				$this->request->data['Reply']['from_user'] = $this->request->data['Message']['from_user'];
-				$this->request->data['Reply']['message'] = $this->request->data['Message']['message'];
 
+				$this->request->data['Reply']['message_id'] = $messageid[0]['Messages']['id'];
+				$this->request->data['Reply']['user_id'] = $this->request->data['Message']['from_user_id'];
+				$this->request->data['Reply']['reply_details'] = $this->request->data['Message']['message_details'];
+                pr($this->request->data);
 				if ($this->Reply->save($this->request->data)) {
-					$this->Flash->success(__('The message has been saved.'));
-					return $this->redirect(array('action' => 'search'));
+					$this->Flash->success(__('The reply has been sent'));
+					return $this->redirect(array('controller'=>'messages','action' => 'replyview', $messageid[0]['Messages']['id']));
 				} else {
-					$this->Flash->error(__('The message could not be saved. Please, try again.'));
+					$this->Flash->error(__('The reply could not be sent. Please, try again.'));
 				}
 			}
 			// if ($this->Message->save($this->request->data)) {
@@ -120,6 +151,9 @@ class MessagesController extends AppController {
         }
     
         if ($this->Message->delete($id)) {
+            $this->Reply->query("
+            DELETE FROM Replies WHERE message_id = $id;
+            ");
             $this->Flash->success(
                 __('Message has been deleted.')
             );
@@ -128,6 +162,10 @@ class MessagesController extends AppController {
                 __('Message could not be deleted.', h($id))
             );
         }
+
+        
+
+
     
         return $this->redirect(array('action' => 'messages'));
     }
@@ -139,7 +177,7 @@ class MessagesController extends AppController {
         throw new NotFoundException(__('Invalid post'));
     }
 
-    $message = $this->Message->findById($id);
+    $message = $this->Message->findById($id,);
     if (!$message) {
         throw new NotFoundException(__('Invalid post'));
     }
@@ -147,6 +185,7 @@ class MessagesController extends AppController {
     $userdata = $this->User->query("
     SELECT id, username, profilepic FROM Users;
      ");
+
     $replies = $this->Reply->query("
     SELECT * FROM Replies as Replies WHERE 
     `message_id` = $id 

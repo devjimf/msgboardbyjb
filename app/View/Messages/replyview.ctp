@@ -51,14 +51,14 @@
                     <p class="large text-muted mb-1"><?php echo $reply['Replies']['date_created']; ?></p>
                   </div>
                 </a>
-                <span class="badge float-end"><?php echo $this->Form->postLink(
-                    'Edit',
-                    array('action' => 'replyview', $reply['Replies']['id']),
-                    array( 'class' => 'btn btn-success'),
-                ); ?></span>
+                <span class="badge float-end"><?php //echo $this->Form->postLink(
+                    //'Edit',
+                    //array('action' => 'replyview', $reply['Replies']['id']),
+                    //array( 'class' => 'btn btn-success'),
+                //);?></span>
 				    <span class="badge float-end"><?php echo $this->Form->postLink(
                     'Delete',
-                    array('action' => 'dltmessage', $reply['Replies']['id']),
+                    array('controller' => 'replies','action' => 'dltreply', $reply['Replies']['id'], $message['Message']['id'] ),
                     array('confirm' => 'Are you sure?','class' => 'btn btn-danger'),
                 ); ?></span>
                
@@ -70,34 +70,12 @@
 </table>
 
 <div class="col-sm ml-auto m-5"><a href="#" class="ShowMore btn btn-success form-control">SHOW MORE</a></div>
-    <div class="col-sm ml-auto"><a href="#" class="ShowLess btn btn-warning form-control">SHOW LESS</a></div>
     </div>
     </div>
 
 
 <script>
   
-$('document').ready(function(){
-  $('#search').keyup(function(){
-    var searchkey = $(this).val();
-    searchTags( searchkey );
-  });
-
-  function searchTags(keyword){
-    var data = keyword;
-    $.ajax({
-      method: 'get',
-      url: "<?php echo $this->Html->url(['controller' => 'Messages', 'action'=>'Search']);?>",
-      data: {keyword:data},
-
-      success: function(response)
-      {
-        $('.table-content').html(response);
-      }
-    });
-  };
-
-
   $(document).ready(function(){
     $(function(){
 $('.content .items').hide();
@@ -114,9 +92,7 @@ $(this).closest('.content').find('.items:lt(3)').show();
 
 })
 
-
 } );
-});
 
 </script>
 

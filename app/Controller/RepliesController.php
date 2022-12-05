@@ -8,8 +8,11 @@ class RepliesController extends AppController {
         $this->autoRender = false;
 		$this->request->allowMethod('ajax','POST', 'GET');
 		$user_id = AuthComponent::user('id');
+         
+        
+
 		if ($this->request->is('post')) {
-			
+		
 		pr($this->request->data);
 		$this->request->data['Reply']['user_id'] = $this->request->data['Replies']['user_id'];
 		$this->request->data['Reply']['message_id'] = $this->request->data['Replies']['message_id'];
@@ -17,7 +20,7 @@ class RepliesController extends AppController {
 			$this->Reply->create();
 			if ($this->Reply->save($this->request->data)) {
 				$this->Flash->success(__('The reply has been saved.'));
-				return $this->redirect(array('controller' => 'messages', 'action' => 'messages'));
+				return $this->redirect(array('controller'=>'messages','action' => 'replyview', $this->request->data['Replies']['message_id']));
 			} else {
 				$this->Flash->error(__('The reply could not be saved. Please, try again.'));
 			}
@@ -28,5 +31,26 @@ class RepliesController extends AppController {
 		
 		$this->redirect($this->referer());
 }
+
+    public function dltreply($id, $messageid){
+        // pr($id);
+        // pr($messageid);
+        if ($this->request->is('get')) {
+            throw new MethodNotAllowedException();
+        }
+    
+        if ($this->Reply->delete($id)) {
+
+            $this->Flash->success(
+                __('Message has been deleted.')
+            );
+        } else {
+            $this->Flash->error(
+                __('Message could not be deleted.', h($id))
+            );
+        }
+
+        return $this->redirect(array('controller'=>'messages','action' => 'replyview', $messageid));
+    }
 
 }

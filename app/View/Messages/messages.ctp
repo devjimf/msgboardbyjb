@@ -38,6 +38,8 @@
                   <?php foreach($userdata as $user): ?>
               <?php if($user['Users']['id'] == $message['Messages']['to_user_id'] ) : ?>
 				  <?php echo $this->Html->image($user['Users']['profilepic'], array('class' => 'rounded-circle img-fluid', 'height' => '60', 'width' => '60', 'fullBase' => true, 'plugin' => false)); ?>
+          <?php elseif($user['Users']['id'] == $message['Messages']['from_user_id'] ) : ?>
+				  <?php echo $this->Html->image($user['Users']['profilepic'], array('class' => 'rounded-circle img-fluid', 'height' => '60', 'width' => '60', 'fullBase' => true, 'plugin' => false)); ?>
           <?php endif; ?>
     <?php endforeach; ?> 
           <div class="pt-1">
@@ -47,7 +49,7 @@
           <?php endif; ?>
     <?php endforeach; ?> 
                       
-                      <p class="small text-muted"><?php echo $message['Messages']['message_details']; ?></p>
+                      <p class="small text-muted"><?php echo $last//$message['Messages']['message_details']; ?></p>
                     </div>
                   </div>
                   <div class="pt-1">
@@ -72,8 +74,9 @@
     <?php unset($message); ?>
 </table>
 
-<div class="col-sm ml-auto m-5"><a href="#" class="ShowMore btn btn-success form-control">SHOW MORE</a></div>
-    <div class="col-sm ml-auto"><a href="#" class="ShowLess btn btn-warning form-control">SHOW LESS</a></div>
+<h2 class="load-more">Load More</h2>
+            <input type="hidden" id="row" value="0">
+            <input type="hidden" id="all" value="<?php echo $allcount; ?>">
     </div>
     </div>
 
