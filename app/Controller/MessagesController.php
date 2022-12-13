@@ -124,6 +124,16 @@ class MessagesController extends AppController {
 			else
 			{
 
+                $user_id = AuthComponent::user('id');
+                $messages = $this->Message->query("
+                    SELECT * FROM Messages as Messages WHERE 
+                    `from_user_id` = $user_id 
+                    OR 
+                    `to_user_id` = $user_id 
+                    ORDER BY date_created DESC ;
+                    ");
+                $messageid = $messages['Messages']['id'];
+                pr($messagesid);
 				$this->request->data['Reply']['message_id'] = $messageid[0]['Messages']['id'];
 				$this->request->data['Reply']['user_id'] = $this->request->data['Message']['from_user_id'];
 				$this->request->data['Reply']['reply_details'] = $this->request->data['Message']['message_details'];
